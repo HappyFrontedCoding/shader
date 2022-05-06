@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+      body {
+        overflow: hidden;
+      }
+    </style>
+    
+    <!-- Testing Your Shader -->
+    <script type="x-shader/x-vertex" id="vertexShader">
+      void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    </script>
+    <script type="x-shader/x-fragment" id="fragmentShader">
+      void main() {
+        gl_FragColor = vec4(1.0 , 0, 0, 1.0);
+      }
+    </script>
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from "./lib/three.module.js";
+      import { init, render, animate } from "./main.js";
+      const { scene, gui } = init();
+
+      /* Add Some Shperes */
+      const g_shpere = new THREE.SphereGeometry(10, 64, 32);
+      const m_shader_sphere = new THREE.ShaderMaterial({
+        vertexShader: document.getElementById("vertexShader").textContent,
+        fragmentShader: document.getElementById("fragmentShader").textContent,
+      });
+      const m_pbr_sphere = new THREE.MeshPhysicalMaterial({
+        color: 0xff0000,
+        metalness: 1,
+        roughness: 0,
+      });
+      
+      const s_sphere = new THREE.Mesh(g_shpere, m_shader_sphere);
+      const pbr_sphere = new THREE.Mesh(g_shpere, m_pbr_sphere);
+      s_sphere.position.x = 20;
+      pbr_sphere.position.x = -20;
+
+      scene.add(pbr_sphere);
+      scene.add(s_sphere);
+
+      animate();
+    </script>
+  </body>
+</html>
